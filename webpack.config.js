@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const ENV = {
   DEVELOPMENT: "development",
@@ -11,7 +12,10 @@ module.exports = () => {
 
   return {
     mode: isProduction ? ENV.PRODUCTION : ENV.DEVELOPMENT,
-    entry: "./src/js/index.js",
+    entry: [
+      __dirname + "./src/js/index.js",
+      __dirname + "./src/styles/styles.scss"
+    ],
     resolve: { extensions: [".js", ".jsx"] },
     module: {
       rules: [
@@ -27,7 +31,38 @@ module.exports = () => {
           use: {
             loader: "html-loader"
           }
-
+        },
+        {
+          test: /\.(sa|sc|c)css$/,
+          use: [
+            {
+              loader: MiniCssExtractPlugin.loader
+            },
+            {
+              loader: "css-loader",
+              options: { importLoaders: 1 }
+            },
+            {
+              loader: "postcss-loader",
+              options: {
+                path: __dirname + "./postcss.config.js"
+              }
+            },
+            {
+              loader: "sass-loader"
+            }
+          ]
+        },
+        {
+          test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/,
+          use: [
+            {
+              loader: "file-loader",
+              options: {
+                name: "assets/[name].[hash].[ext]"
+              }
+            }
+          ]
         }
       ]
     },
@@ -35,12 +70,16 @@ module.exports = () => {
       new HtmlWebPackPlugin({
         template: "./src/index.html",
         filename: "./index.html"
+      }),
+      new MiniCssExtractPlugin({
+        filename: isProduction ? "styles/[name].[hash].css" : "styles/[name].css",
+        chunkFilename: isProduction ? "styles/[id].[hash].css" : "styles/[id].css"
       })
     ],
     output: {
       path: __dirname + '/dist',
       publicPath: '/',
-      filename: '[name].[hash].js'
+      filename: 'js/[name].[hash].js'
     },
     devServer: {
       port: 3000

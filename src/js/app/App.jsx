@@ -3,7 +3,7 @@ import React from "react";
 const App = () => {
     return (
         <div>
-            <p>App</p>
+            <button>Test Button</button>
         </div>
     )
 }
