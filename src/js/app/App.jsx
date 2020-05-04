@@ -5,7 +5,7 @@ const App = () => {
         <div>
             <button>Test Button</button>
         </div>
-    )
-}
+    );
+};
 
 export default App;
