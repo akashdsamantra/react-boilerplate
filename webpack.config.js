@@ -4,17 +4,20 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const ENV = {
   DEVELOPMENT: "development",
-  PRODUCTION: "production"
-}
+  PRODUCTION: "production",
+};
 
 module.exports = () => {
-  const isProduction = process.env && process.env.RUN_ENV && process.env.RUN_ENV === ENV.PRODUCTION
+  const isProduction =
+    process.env &&
+    process.env.RUN_ENV &&
+    process.env.RUN_ENV === ENV.PRODUCTION;
 
   return {
     mode: isProduction ? ENV.PRODUCTION : ENV.DEVELOPMENT,
     entry: [
-      __dirname + "./src/js/index.js",
-      __dirname + "./src/styles/styles.scss"
+      __dirname + "/src/js/index.js",
+      __dirname + "/src/styles/styles.scss",
     ],
     resolve: { extensions: [".js", ".jsx"] },
     module: {
@@ -23,35 +26,29 @@ module.exports = () => {
           test: /\.(js|jsx)$/,
           exclude: /node_modules/,
           use: {
-            loader: "babel-loader"
-          }
+            loader: "babel-loader",
+          },
         },
         {
           test: /\.html$/,
           use: {
-            loader: "html-loader"
-          }
+            loader: "html-loader",
+          },
         },
         {
-          test: /\.(sa|sc|c)css$/,
+          test: /\.(sa|sc|c)ss$/,
           use: [
             {
-              loader: MiniCssExtractPlugin.loader
+              loader: MiniCssExtractPlugin.loader,
             },
             {
               loader: "css-loader",
-              options: { importLoaders: 1 }
+              options: { importLoaders: 1 },
             },
             {
-              loader: "postcss-loader",
-              options: {
-                path: __dirname + "./postcss.config.js"
-              }
+              loader: "sass-loader",
             },
-            {
-              loader: "sass-loader"
-            }
-          ]
+          ],
         },
         {
           test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/,
@@ -59,30 +56,34 @@ module.exports = () => {
             {
               loader: "file-loader",
               options: {
-                name: "assets/[name].[hash].[ext]"
-              }
-            }
-          ]
-        }
-      ]
+                name: "assets/[name].[hash].[ext]",
+              },
+            },
+          ],
+        },
+      ],
     },
     plugins: [
       new HtmlWebPackPlugin({
         template: "./src/index.html",
-        filename: "./index.html"
+        filename: "./index.html",
       }),
       new MiniCssExtractPlugin({
-        filename: isProduction ? "styles/[name].[hash].css" : "styles/[name].css",
-        chunkFilename: isProduction ? "styles/[id].[hash].css" : "styles/[id].css"
-      })
+        filename: isProduction
+          ? "styles/[name].[hash].css"
+          : "styles/[name].css",
+        chunkFilename: isProduction
+          ? "styles/[id].[hash].css"
+          : "styles/[id].css",
+      }),
     ],
     output: {
-      path: __dirname + '/dist',
-      publicPath: '/',
-      filename: 'js/[name].[hash].js'
+      path: __dirname + "/dist",
+      publicPath: "/",
+      filename: "js/[name].[hash].js",
     },
     devServer: {
-      port: 3000
-    }
+      port: 3000,
+    },
   };
 };
